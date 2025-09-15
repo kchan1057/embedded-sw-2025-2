@@ -1,0 +1,19 @@
+name: Opened Issue Notification # 액션의 이름
+
+on: # 액션의 trigger
+  issues:
+    types:
+      - opened  # 이슈가 열릴 때 실행
+
+jobs: # 액션이 할 일
+  create-issue:
+    name: Discord Notification - Create Issue # 액션이 할일의 이름
+    runs-on: ubuntu-latest # 액션이 실행될 환경
+    steps: # 액션의 일들
+      - name: Send Issue
+        uses: Ilshidur/action-discord@master # Ilshidur/action-discord 를 사용할것
+        env: # 액션이 실행 될 때 사용할 값들. 아래 값들은 Ilshidur/action-discord 를 참고함
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+          DISCORD_USERNAME: TIME_LETTER_BOT
+          DISCORD_AVATAR: https://github.com/pknu-wap/WAPP/blob/main/image/icon.png?raw=true
+          DISCORD_EMBEDS: '[{"title":"신규 이슈 사항:${{ github.event.issue.title }}","color":10478271,"description":"${{ github.event.issue.html_url }}","fields":[{"name":"ISSUE NUMBER","value":"#${{ github.event.issue.number }}","inline":true},{"name":"AUTHOR","value":"${{ github.event.issue.user.login }}","inline":true}]}]'
