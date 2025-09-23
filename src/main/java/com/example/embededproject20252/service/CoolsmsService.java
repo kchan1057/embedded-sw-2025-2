@@ -1,19 +1,17 @@
-package com.example.embededproject20252;
+package com.example.embededproject20252.service;
 
 import java.util.HashMap;
 import net.nurigo.java_sdk.api.Message;
 import net.nurigo.java_sdk.exceptions.CoolsmsException;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Component
-@PropertySource("classpath:application.properties")
-public class SmsUtil {
+public class CoolsmsService {
 
-  private static final Logger log = LoggerFactory.getLogger(SmsUtil.class);
+  private static final Logger log = LoggerFactory.getLogger(CoolsmsService.class);
 
   @Value("${sms.phoneNumber}")
   private String FROM_NUMBER;
@@ -26,17 +24,16 @@ public class SmsUtil {
 
   private static final int MAX_SMS_LENGTH = 45;
 
-  public boolean sendOneMessage(String to, String userName) {
+  public void sendOneMessage(String to, String userName, int motion) {
     if (to == null || to.isEmpty()) {
       log.warn("SMS 전송 실패: 받는 번호가 없습니다.");
-      return false;
+      return;
     }
     if (userName == null || userName.isEmpty()) {
-      userName = "사용자"; // 기본값
+      userName = "사용자";
     }
 
-    final String rawMessage = "[약꼭] " + userName + "님 복용 완료!";
-    // 45자 초과 시 자르기
+    final String rawMessage = String.format("[약꼭] %s님 %d번 약통 복용 완료!", userName, motion);
     final String messageText = rawMessage.length() > MAX_SMS_LENGTH
         ? rawMessage.substring(0, MAX_SMS_LENGTH)
         : rawMessage;
@@ -52,10 +49,10 @@ public class SmsUtil {
       coolsms.send(params);
 
       log.info("SMS 전송 성공: to={}, message={}", to, messageText);
-      return true;
+      return;
     } catch (CoolsmsException e) {
       log.error("SMS 전송 실패: to={}, message={}", to, messageText, e);
-      return false;
+      return;
     }
   }
 }

@@ -69,6 +69,9 @@
 <body>
 <div id="contents">
   <h2>약꼭</h2>
+  <label for="serial_num">기기 번호</label>
+  <input type="text" id="serial_num" name="serial_num" placeholder="기기번호 입력"/>
+
   <label for="to">보호자 번호</label>
   <input type="text" id="to" name="to" placeholder="전화번호 입력"/>
 
@@ -81,18 +84,20 @@
 </body>
 
 <script type="text/javascript">
-  let checkNum = ''; // 전역 변수로 인증번호 저장
 
   $('#send').click(function() {
+    // #serial_num input의 값을 가져오도록 수정
+    const serialNumber = $('#serial_num').val();
     const phoneNumber = $('#to').val();
     const userName = $('#userName').val();
 
     $.ajax({
       url: '/user/register',
       type: 'POST',
-      data: { "name": userName, "phoneNumber": phoneNumber },
+      // 서버의 @RequestParam 변수명과 일치하도록 키 이름을 수정
+      data: {"serialNum": serialNumber, "name": userName, "phoneNumber": phoneNumber },
       success: function(result) {
-        alert(result ? '등록 및 SMS 발송 성공' : '등록 또는 SMS 실패');
+        alert(result ? '등록 완료!' : '등록 실패!');
       },
       error: function() {
         alert('서버 오류 발생');
