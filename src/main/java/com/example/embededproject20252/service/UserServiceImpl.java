@@ -36,5 +36,4 @@ public class UserServiceImpl implements UserService{
         user.getPhoneNumber()
     );
   }
-
 }
